@@ -91,5 +91,31 @@
                 `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
         }, 1000);
     </script>
+    <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- Подключение библиотеки Telegram обязательно -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+    <!-- Кнопка сброса -->
+    <button id="exitBtn" style="padding: 20px; background: red; color: white; border: none; border-radius: 10px; width: 100%;">
+        ЗАВЕРШИТЬ ЗВОНОК
+    </button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); // Сообщаем Telegram, что приложение готово
+
+        // Находим кнопку и вешаем только одно действие — закрытие
+        document.getElementById('exitBtn').onclick = function() {
+            tg.close(); // Эта команда полностью закрывает мини-приложение
+        };
+    </script>
+
+</body>
+</html>
 </body>
 </html>
