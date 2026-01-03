@@ -169,6 +169,72 @@
                 `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
         }, 1000);
     </script>
+    <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Mini App</title>
+    <!-- 1. Подключаем библиотеку Телеграм -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        /* Ваши стили */
+        #gallery img { width: 100px; margin: 5px; border-radius: 10px; }
+        button { padding: 10px; margin: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- 2. Ваша верстка (Кнопки и Контейнер) -->
+    <button id="addBtn">Добавить фото</button>
+    <button id="resetBtn">Сбросить всё</button>
+
+    <div id="gallery">
+        <!-- Сюда будут добавляться фото -->
+    </div>
+
+    <!-- 3. КУДА ПИСАТЬ JS: В самом конце, перед </body> -->
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        // Находим элементы в HTML
+        const gallery = document.getElementById('gallery');
+        const resetBtn = document.getElementById('resetBtn');
+        const addBtn = document.getElementById('addBtn');
+
+        // Массив, где хранятся ссылки на фото
+        let photos = [];
+
+        // ФУНКЦИЯ ОТРИСОВКИ (главный секрет против дублей)
+        function render() {
+            gallery.innerHTML = ''; // ОЧИЩАЕМ контейнер перед отрисовкой
+            
+            photos.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                gallery.appendChild(img);
+            });
+        }
+
+        // Логика добавления
+        addBtn.onclick = function() {
+            const randomId = Math.floor(Math.random() * 1000);
+            photos.push(`https://picsum.photos/200?random=${randomId}`);
+            render(); // Рисуем заново
+        };
+
+        // ЛОГИКА СБРОСА (теперь точно заработает)
+        resetBtn.onclick = function() {
+            photos = []; // Очищаем массив данных
+            render();    // Очищаем экран
+            console.log("Галерея очищена");
+        };
+
+    </script>
+</body>
+</html>
 </body>
 </html>
 </body>
