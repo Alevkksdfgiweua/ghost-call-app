@@ -91,5 +91,89 @@
                 `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
         }, 1000);
     </script>
+    <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Caller</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.18.0.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #0f0f0f; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #1c1c1c; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 80%; }
+        .btn { background: #0088cc; color: white; border: none; padding: 15px 25px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
+        .status { color: #aaaaaa; font-size: 14px; margin-top: 15px; }
+        .room-info { font-size: 12px; color: #555; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Ghost Caller 👻</h1>
+        <div id="display-status">Готов к анонимному звонку</div>
+        <button id="joinBtn" class="btn">Войти в комнату</button>
+        <div class="room-info" id="room-info"></div>
+        <div class="status" id="log">Ожидание действий...</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // --- НАСТРОЙКИ AGORA ---
+        const APP_ID = "ВСТАВЬ_СВОЙ_APP_ID_СЮДА"; // <-- ВСТАВЬ СВОЙ ID СЮДА
+        
+        // Получаем ID комнаты из ссылки (например, t.me/bot/app?startapp=123)
+        // Если параметра нет, создаем случайный
+        const urlParams = new URLSearchParams(window.location.search);
+        let roomId = tg.initDataUnsafe.start_param || "default_room";
+        
+        document.getElementById('room-info').innerText = "ID комнаты: " + roomId;
+
+        let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        let localTracks = { audioTrack: null };
+
+        const joinBtn = document.getElementById('joinBtn');
+        const logDiv = document.getElementById('log');
+
+        joinBtn.onclick = async () => {
+            try {
+                joinBtn.disabled = true;
+                logDiv.innerText = "Подключение к сети...";
+
+                // 1. Присоединяемся к каналу (токен null, так как мы в Testing Mode)
+                await client.join(APP_ID, roomId, null, null);
+
+                // 2. Создаем и публикуем аудио
+                localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+                await client.publish(localTracks.audioTrack);
+
+                logDiv.innerText = "Звонок активен. Собеседник может войти.";
+                joinBtn.innerText = "В ЭФИРЕ";
+                joinBtn.style.background = "#cc0000";
+
+                // 3. Слушаем других участников
+                client.on("user-published", async (user, mediaType) => {
+                    await client.subscribe(user, mediaType);
+                    if (mediaType === "audio") {
+                        user.audioTrack.play();
+                        logDiv.innerText = "Собеседник подключился!";
+                    }
+                });
+
+                client.on("user-left", () => {
+                    logDiv.innerText = "Собеседник вышел.";
+                });
+
+            } catch (e) {
+                console.error(e);
+                logDiv.innerText = "Ошибка: " + e.message;
+                joinBtn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
 </body>
 </html>
