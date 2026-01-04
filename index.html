@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ghost Call UI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #000; color: white; margin: 0; overflow: hidden; }
@@ -39,7 +40,7 @@
             <h1 id="timer" class="text-6xl font-light mt-4 tabular-nums tracking-tight">00:00</h1>
             <div class="flex items-center justify-center gap-2 mt-4">
                 <div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
-                    <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                        <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                     <span class="text-[11px] font-medium text-gray-400">Шифрование активно</span>
                     <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                 </div>
@@ -68,112 +69,35 @@
             </button>
 
             <button onclick="this.classList.toggle('btn-mask-active')" class="btn-mask-active w-14 h-14 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center transition-all active:scale-90">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 11-18 0 9 9 0 0118 0z" /></svg>
             </button>
 
-            <button class="w-14 h-14 md:w-16 md:h-16 bg-[#FF3B30] rounded-full flex items-center justify-center transition-all active:scale-95 hover:bg-red-600 shadow-lg shadow-red-500/20">
+            <!-- Кнопка сброса: закрывает Telegram Mini App -->
+            <button onclick="window.Telegram.WebApp.close()" class="w-14 h-14 md:w-16 md:h-16 bg-[#FF3B30] rounded-full flex items-center justify-center transition-all active:scale-95 hover:bg-red-600 shadow-lg shadow-red-500/20">
                 <svg class="w-7 h-7 rotate-[135deg] text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79a15.1 15.1 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.24.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
             </button>
-
-            <button onclick="this.classList.toggle('btn-toggle-active')" class="w-14 h-14 md:w-16 md:h
- 
--16 bg-white/10 rounded-full flex items-center justify-center transition-all active:scale-90 hover:bg-white/20">
+<button onclick="this.classList.toggle('btn-toggle-active')" class="w-14 h-14 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center transition-all active:scale-90 hover:bg-white/20">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
             </button>
         </div>
     </div>
 
     <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
         let s = 0;
         setInterval(() => {
             s++;
-            document.getElementById('timer').innerText = 
-                `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+            const timerElement = document.getElementById('timer');
+            if (timerElement) {
+                timerElement.innerText = 
+                    ${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')};
+            }
         }, 1000);
     </script>
-    <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost Caller</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.18.0.js"></script>
-    <style>
-        body { font-family: sans-serif; background: #0f0f0f; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: #1c1c1c; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 80%; }
-        .btn { background: #0088cc; color: white; border: none; padding: 15px 25px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
-        .status { color: #aaaaaa; font-size: 14px; margin-top: 15px; }
-        .room-info { font-size: 12px; color: #555; margin-top: 10px; }
-    </style>
-</head>
-<body>
-
-    <div class="card">
-        <h1>Ghost Caller 👻</h1>
-        <div id="display-status">Готов к анонимному звонку</div>
-        <button id="joinBtn" class="btn">Войти в комнату</button>
-        <div class="room-info" id="room-info"></div>
-        <div class="status" id="log">Ожидание действий...</div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // --- НАСТРОЙКИ AGORA ---
-        const APP_ID = "ВСТАВЬ_СВОЙ_APP_ID_СЮДА"; // <-- ВСТАВЬ СВОЙ ID СЮДА
-        
-        // Получаем ID комнаты из ссылки (например, t.me/bot/app?startapp=123)
-        // Если параметра нет, создаем случайный
-        const urlParams = new URLSearchParams(window.location.search);
-        let roomId = tg.initDataUnsafe.start_param || "default_room";
-        
-        document.getElementById('room-info').innerText = "ID комнаты: " + roomId;
-
-        let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-        let localTracks = { audioTrack: null };
-
-        const joinBtn = document.getElementById('joinBtn');
-        const logDiv = document.getElementById('log');
-
-        joinBtn.onclick = async () => {
-            try {
-                joinBtn.disabled = true;
-                logDiv.innerText = "Подключение к сети...";
-
-                // 1. Присоединяемся к каналу (токен null, так как мы в Testing Mode)
-                await client.join(APP_ID, roomId, null, null);
-
-                // 2. Создаем и публикуем аудио
-                localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-                await client.publish(localTracks.audioTrack);
-
-                logDiv.innerText = "Звонок активен. Собеседник может войти.";
-                joinBtn.innerText = "В ЭФИРЕ";
-                joinBtn.style.background = "#cc0000";
-
-                // 3. Слушаем других участников
-                client.on("user-published", async (user, mediaType) => {
-                    await client.subscribe(user, mediaType);
-                    if (mediaType === "audio") {
-                        user.audioTrack.play();
-                        logDiv.innerText = "Собеседник подключился!";
-                    }
-                });
-
-                client.on("user-left", () => {
-                    logDiv.innerText = "Собеседник вышел.";
-                });
-
-            } catch (e) {
-                console.error(e);
-                logDiv.innerText = "Ошибка: " + e.message;
-                joinBtn.disabled = false;
-            }
-        };
-    </script>
 </body>
 </html>
-</body>
-</html>
+                    
